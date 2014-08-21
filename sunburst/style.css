@@ -1,0 +1,24 @@
+.qv-object-sunburst div.qv-object-content-container {
+	overflow: auto;
+}
+.qv-object-sunburst td, th {
+	border-top: 0px solid #fff;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	cursor: default;
+	font-size: 12px;
+}
+.qv-object-sunburst td.numeric {
+	text-align: right;
+}
+.qv-object-sunburst button {
+	width: 100%;
+}
+path {
+  stroke: #fff;
+  fill-rule: evenodd;
+}

@@ -1,0 +1,9 @@
+{
+    "name": "sunburst",
+    "description": "zoomable sunburst extension",
+    "icon": "extension",
+    "type": "visualization",
+    "version": "1.0",
+    "preview": "extension",
+    "author": "Brian Munz"
+}
