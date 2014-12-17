@@ -8,6 +8,8 @@ The labels were added with the help of this tutorial by Martin Walter:
 
 Please view the QVF app for the best understanding of this extension.  There is a Story in the Storytelling section that goes through implementation.
 
+This extension was edited recently to use the new pageData function from senseUtils which will make it support data sets larger than 10,000 cells.
+
 *********************************
 Installation & Use
 *********************************
