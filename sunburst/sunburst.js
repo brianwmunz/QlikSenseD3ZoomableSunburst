@@ -140,7 +140,7 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
             canTakeSnapshot: true
         },
         paint: function ($element, layout) {
-            senseUtils.pageData(this, $element, layout, drawBurst);
+            senseUtils.pageExtensionData(this, $element, layout, drawBurst);
         },
         resize: function ($el, layout) {
             this.paint($el, layout);
