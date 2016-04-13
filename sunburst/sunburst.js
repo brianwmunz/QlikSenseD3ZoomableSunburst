@@ -31,7 +31,15 @@ function drawBurst($element, layout, fullMatrix) {
 
     var y = d3.scale.linear().range([0, radius]);
 
-    var color = d3.scale.category20c();
+
+    var propColors = layout.colorInput.split(',');
+
+    // console.log(propColors);
+
+    var color = d3.scale.ordinal()
+                    .range(propColors);
+
+    // console.log("colorFunc", color(1));
 
     var svg = d3.select("#" + id).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
@@ -57,6 +65,7 @@ function drawBurst($element, layout, fullMatrix) {
             var theColor = "white";
         } else {
             var theColor = color((d.children ? d : d.parent).name);
+            // console.log('theColor',theColor);
         }
         return theColor;
     }).on("click", click);
@@ -133,6 +142,25 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
                 },
                 settings: {
                     uses: "settings"
+                },
+                properties: {
+                    component: "expandable-items",
+                    label: "My Accordion Section",
+                    items: {
+                        header1: {
+                            type: "items",
+                            label: "Colors",
+                            items: {
+                                color: {
+                                    ref: "colorInput",
+                                    label: "Hex Colors",
+                                    type: "string",
+                                    expression: "always",
+                                    defaultValue: "#393b79,#5254a3,#6b6ecf,#9c9ede,#637939,#8ca252,#b5cf6b,#cedb9c,#8c6d31,#bd9e39,#e7ba52,#e7cb94,#843c39,#ad494a,#d6616b,#e7969c,#7b4173,#a55194,#ce6dbd,#de9ed6"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
