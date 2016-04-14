@@ -150,7 +150,7 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
                 ,
                 properties: {
                     component: "expandable-items",
-                    label: "My Accordion Section",
+                    label: "Properties",
                     items: {
                         header1: {
                             type: "items",
