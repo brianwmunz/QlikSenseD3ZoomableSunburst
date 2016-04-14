@@ -8,10 +8,11 @@ function drawBurst($element, layout, fullMatrix) {
     };
     //create matrix variable
     var qMatrix = fullMatrix;
-    console.log("qMatrix",qMatrix);
     //use senseD3.createFamily to create JSON object
     myJSON.children = senseD3.createFamily(qMatrix);
-    console.log("myJSON.children",myJSON.children);
+
+console.log('chillin', myJSON.children);
+
     //create unique id
     var id = "sb_" + layout.qInfo.qId;
     //if extension has already been loaded, empty it, if not attach unique id
@@ -33,15 +34,16 @@ function drawBurst($element, layout, fullMatrix) {
 
     var y = d3.scale.linear().range([0, radius]);
 
+    // console.log(layout);
 
     var propColors = layout.colorInput.split(',');
 
-    console.log("layout",layout);
+    // console.log(propColors);
 
-    var color = d3.scale.ordinal()
+    var color = d3.scale.ordinal()//category20c();
                     .range(propColors);
 
-    // console.log("colorFunc", color(1));
+    console.log("colorFunc", color(1));
 
     var svg = d3.select("#" + id).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
@@ -66,7 +68,7 @@ function drawBurst($element, layout, fullMatrix) {
         if (d.depth === 0) {
             var theColor = "white";
         } else {
-            var theColor = color((d.children ? d : d.parent).name);
+            var theColor = color((d.children ? d : d.parent).color);
             // console.log('theColor',theColor);
         }
         return theColor;
@@ -137,24 +139,15 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
                 measures: {
                     uses: "measures",
                     min: 1,
-                    max: 2,
-                    items:{
-                        colorExpression: {
-                            type: "string",
-                            label: "Expression for color coding",
-                            ref: "qAttributeExpressions.0.qExpression",
-                            component: "expression",
-                            expression: "always",
-                            defaultValue: ""
-                        }
-                    }
+                    max: 2
                 },
                 sorting: {
                     uses: "sorting"
                 },
                 settings: {
                     uses: "settings"
-                },
+                }
+                ,
                 properties: {
                     component: "expandable-items",
                     label: "My Accordion Section",
@@ -168,7 +161,7 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
                                     label: "Hex Colors",
                                     type: "string",
                                     expression: "always",
-                                    defaultValue: "#393b79,#5254a3,#6b6ecf,#9c9ede,#637939,#8ca252,#b5cf6b,#cedb9c,#8c6d31,#bd9e39,#e7ba52,#e7cb94,#843c39,#ad494a,#d6616b,#e7969c,#7b4173,#a55194,#ce6dbd,#de9ed6"
+                                    defaultValue: "#393b79,#5254a3,#6b6ecf"
                                 }
                             }
                         }

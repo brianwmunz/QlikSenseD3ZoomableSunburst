@@ -23,8 +23,10 @@ var senseD3 = {
         //create arrays of parents and children.  this is so we can determine if there's any nodes without parents.  these would be the top parents 
         var parentsA = [];
         var kidsA = [];
+
       	//format Sense data into a more easily consumable format and build the parent/child arrays
         var happyData = dataSet.map(function(d) {
+            // console.log('scary d', d);
             if (kidsA.indexOf(d[0].qText) === -1) {
                 kidsA.push(d[0].qText);
             }
@@ -37,12 +39,15 @@ var senseD3 = {
             } else {
                 parentVal = d[1].qText;
             }
+            // if (true) {};
             return {
                 name: d[0].qText,
                 parent: parentVal,
-                size: d[2].qNum
+                color: qState="O" ? d[2].qNum : 1,
+                size: (d[3] || d[2]).qNum
             };
         });
+
       	//loop through the parent and child arrays and find the parents which aren't children.  set those to have a parent of "-", indicating that they're the top parent
         $.each(parentsA, function() {
             if (kidsA.indexOf(this.toString()) === -1) {
@@ -62,6 +67,7 @@ var senseD3 = {
                     return {
                         name: d.name,
                         size: d.size,
+                        color: d.color,
                         children: getChildren(d.name)
                     };
                 });
