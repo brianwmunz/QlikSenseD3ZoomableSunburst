@@ -8,8 +8,10 @@ function drawBurst($element, layout, fullMatrix) {
     };
     //create matrix variable
     var qMatrix = fullMatrix;
+    console.log("qMatrix",qMatrix);
     //use senseD3.createFamily to create JSON object
     myJSON.children = senseD3.createFamily(qMatrix);
+    console.log("myJSON.children",myJSON.children);
     //create unique id
     var id = "sb_" + layout.qInfo.qId;
     //if extension has already been loaded, empty it, if not attach unique id
@@ -34,7 +36,7 @@ function drawBurst($element, layout, fullMatrix) {
 
     var propColors = layout.colorInput.split(',');
 
-    // console.log(propColors);
+    console.log("layout",layout);
 
     var color = d3.scale.ordinal()
                     .range(propColors);
@@ -130,12 +132,22 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
                 dimensions: {
                     uses: "dimensions",
                     min: 2,
-                    max: 2
+                    max: 3
                 },
                 measures: {
                     uses: "measures",
                     min: 1,
-                    max: 2
+                    max: 2,
+                    items:{
+                        colorExpression: {
+                            type: "string",
+                            label: "Expression for color coding",
+                            ref: "qAttributeExpressions.0.qExpression",
+                            component: "expression",
+                            expression: "always",
+                            defaultValue: ""
+                        }
+                    }
                 },
                 sorting: {
                     uses: "sorting"
