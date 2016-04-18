@@ -9,13 +9,16 @@ function drawBurst($element, layout, fullMatrix) {
     //create matrix variable
     var qMatrix = fullMatrix;
     // get all property values, set value if there is a color dimension
-    var layoutProps = layout.props,
-        colorDimExist = layoutProps.colorType=="dimAndHex";
-// console.log('colordim', colorDimExist);
+    var layoutProps = layout.props;
+console.log('layout', layout);
+console.log('qMatrix', qMatrix);
+    var colorSelection = layout.qHyperCube.qMeasureInfo[0].colorType;
+    var customColorDim = colorSelection=="dimAndHex" ? true : false;
+console.log('customColorDim',customColorDim);
     // find number of dimensions and store to variable
-    var numOfDims = senseD3.findNumOfDims(layout, colorDimExist);
+    var numOfDims = senseD3.findNumOfDims(layout);
     //use senseD3.createFamily to create JSON object
-    myJSON.children = senseD3.createFamily(qMatrix, layoutProps.dataFormat, numOfDims, colorDimExist);
+    myJSON.children = senseD3.createFamily(qMatrix, numOfDims, layoutProps.dataFormat, customColorDim);
 
 console.log('kids', myJSON.children);
 // console.log('jsonobj', senseD3.createJSONObj(layout, numOfDims));
@@ -29,10 +32,7 @@ console.log('kids', myJSON.children);
         $element.append($('<div />').attr("id", id));
     }
     $("#" + id).width($element.width()).height($element.height());
-/*var width = 400-5,
-                height = 400-5,
-                radius = (Math.min(width, height) / 2.2);
-            */
+
     var width = $("#" + id).width() - 5,
         height = $("#" + id).height() - 5,
         radius = (Math.min(width, height) / 2.2);
@@ -41,15 +41,8 @@ console.log('kids', myJSON.children);
 
     var y = d3.scale.linear().range([0, radius]);
 
-    //read input from dropdown and set scale for color based on property value
-    if (layoutProps.colorType=="cat20") {
-        var color = d3.scale.category20c();
-    } else if (layoutProps.colorType=="dimAndHex") {
-        var propColors = layoutProps.colorInput.split(',');
-        var color = d3.scale.ordinal()
-                        .range(propColors);
-    }
-// console.log("colorFunc", color(1));
+    // set the color scale - only will be used if colorType == "cat20"
+    var color = d3.scale.category20c();
 
     var svg = d3.select("#" + id).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
@@ -74,7 +67,7 @@ console.log('kids', myJSON.children);
         if (d.depth === 0) {
             var theColor = "white";
         } else {
-            var theColor = color(d.color);//(d.children ? d : d.parent)
+            var theColor = colorSelection=="dimAndHex" ? d.color : color(d.color);//(d.children ? d : d.parent)
             // console.log('theColor',theColor);
         }
         return theColor;
@@ -110,12 +103,7 @@ console.log('kids', myJSON.children);
         });
     }
 
-
     d3.select(self.frameElement).style("height", height + "px");
-
-
-
-
 
 }
 define(["jquery", 
@@ -153,7 +141,29 @@ define(["jquery",
                 measures: {
                     uses: "measures",
                     min: 1,
-                    max: 2
+                    max: 2,
+                    items: {
+                        colorType: {
+                            ref: "qDef.colorType",
+                            label: "Color Format",
+                            type: "string",
+                            component: "dropdown",
+                            options: [{
+                                    value: "cat20",
+                                    label: "20 Categorical Colors"
+                                }, {
+                                    value: "dimAndHex",
+                                    label: "By Expression (Hex Values)"
+                                }]
+                        },
+                        color: {
+                            ref: "qAttributeExpressions.0.qExpression",
+                            label: "Hex Color/Expression",
+                            type: "string",
+                            expression: "optional",
+                            defaultValue: "if(avg(Indicator)<=1,'#393b79',if(avg(Indicator)<=2,'#5254a3','#6b6ecf'))"
+                        }
+                    }
                 },
                 sorting: {
                     uses: "sorting"
@@ -166,32 +176,6 @@ define(["jquery",
                     component: "expandable-items",
                     label: "Properties",
                     items: {
-                        colorHeader: {
-                            type: "items",
-                            label: "Colors",
-                            items: {
-                                colorType: {
-                                    ref: "props.colorType",
-                                    label: "Format of Data",
-                                    type: "string",
-                                    component: "dropdown",
-                                    options: [{
-                                            value: "cat20",
-                                            label: "20 Categorical Colors"
-                                        }, {
-                                            value: "dimAndHex",
-                                            label: "Last dimension and hex below"
-                                        }]
-                                },
-                                color: {
-                                    ref: "props.colorInput",
-                                    label: "Hex Colors",
-                                    type: "string",
-                                    expression: "always",
-                                    defaultValue: "#393b79,#5254a3,#6b6ecf"
-                                }
-                            }
-                        },
                         dataHeader: {
                             type: "items",
                             label: "Data Format",
