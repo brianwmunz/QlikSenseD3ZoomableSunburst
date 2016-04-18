@@ -8,10 +8,17 @@ function drawBurst($element, layout, fullMatrix) {
     };
     //create matrix variable
     var qMatrix = fullMatrix;
+    // get all property values, set value if there is a color dimension
+    var layoutProps = layout.props,
+        colorDimExist = layoutProps.colorType=="dimAndHex";
+// console.log('colordim', colorDimExist);
+    // find number of dimensions and store to variable
+    var numOfDims = senseD3.findNumOfDims(layout, colorDimExist);
     //use senseD3.createFamily to create JSON object
-    myJSON.children = senseD3.createFamily(qMatrix);
+    myJSON.children = senseD3.createFamily(qMatrix, layoutProps.dataFormat, numOfDims, colorDimExist);
 
-console.log('chillin', myJSON.children);
+console.log('kids', myJSON.children);
+// console.log('jsonobj', senseD3.createJSONObj(layout, numOfDims));
 
     //create unique id
     var id = "sb_" + layout.qInfo.qId;
@@ -34,16 +41,15 @@ console.log('chillin', myJSON.children);
 
     var y = d3.scale.linear().range([0, radius]);
 
-    // console.log(layout);
-
-    var propColors = layout.colorInput.split(',');
-
-    // console.log(propColors);
-
-    var color = d3.scale.ordinal()//category20c();
-                    .range(propColors);
-
-    console.log("colorFunc", color(1));
+    //read input from dropdown and set scale for color based on property value
+    if (layoutProps.colorType=="cat20") {
+        var color = d3.scale.category20c();
+    } else if (layoutProps.colorType=="dimAndHex") {
+        var propColors = layoutProps.colorInput.split(',');
+        var color = d3.scale.ordinal()
+                        .range(propColors);
+    }
+// console.log("colorFunc", color(1));
 
     var svg = d3.select("#" + id).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
@@ -68,7 +74,7 @@ console.log('chillin', myJSON.children);
         if (d.depth === 0) {
             var theColor = "white";
         } else {
-            var theColor = color((d.children ? d : d.parent).color);
+            var theColor = color(d.color);//(d.children ? d : d.parent)
             // console.log('theColor',theColor);
         }
         return theColor;
@@ -112,7 +118,14 @@ console.log('chillin', myJSON.children);
 
 
 }
-define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseUtils"], function ($, cssContent) {
+define(["jquery", 
+    "text!./style.css", 
+    "./d3.v3.min", 
+    "./bower_components/QlikSenseD3Utils/senseD3utils",
+    // "./senseD3utils",
+    "./senseUtils"
+    ], 
+    function ($, cssContent) {
 
     $("<style>").html(cssContent).appendTo("head");
     return {
@@ -126,6 +139,7 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
                     qHeight: 50
                 }]
             }
+            // ,selectionMode : "CONFIRM"
         },
         definition: {
             type: "items",
@@ -152,16 +166,48 @@ define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils", "./senseU
                     component: "expandable-items",
                     label: "Properties",
                     items: {
-                        header1: {
+                        colorHeader: {
                             type: "items",
                             label: "Colors",
                             items: {
+                                colorType: {
+                                    ref: "props.colorType",
+                                    label: "Format of Data",
+                                    type: "string",
+                                    component: "dropdown",
+                                    options: [{
+                                            value: "cat20",
+                                            label: "20 Categorical Colors"
+                                        }, {
+                                            value: "dimAndHex",
+                                            label: "Last dimension and hex below"
+                                        }]
+                                },
                                 color: {
-                                    ref: "colorInput",
+                                    ref: "props.colorInput",
                                     label: "Hex Colors",
                                     type: "string",
                                     expression: "always",
                                     defaultValue: "#393b79,#5254a3,#6b6ecf"
+                                }
+                            }
+                        },
+                        dataHeader: {
+                            type: "items",
+                            label: "Data Format",
+                            items: {
+                                dataformat: {
+                                    ref: "props.dataFormat",
+                                    label: "Format of Data",
+                                    type: "string",
+                                    component: "dropdown",
+                                    options: [{
+                                            value: "multiDim",
+                                            label: "Multiple Dimensions"
+                                        }, {
+                                            value: "nested",
+                                            label: "Two Dimensional Hierarchy"
+                                        }]
                                 }
                             }
                         }
