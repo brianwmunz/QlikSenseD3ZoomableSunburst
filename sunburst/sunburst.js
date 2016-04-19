@@ -10,18 +10,14 @@ function drawBurst($element, layout, fullMatrix) {
     var qMatrix = fullMatrix;
     // get all property values, set value if there is a color dimension
     var layoutProps = layout.props;
-console.log('layout', layout);
-console.log('qMatrix', qMatrix);
+    //get the color selection field from properties and set a boolean based on the value
     var colorSelection = layout.qHyperCube.qMeasureInfo[0].colorType;
     var customColorDim = colorSelection=="dimAndHex" ? true : false;
-console.log('customColorDim',customColorDim);
+
     // find number of dimensions and store to variable
     var numOfDims = senseD3.findNumOfDims(layout);
     //use senseD3.createFamily to create JSON object
     myJSON.children = senseD3.createFamily(qMatrix, numOfDims, layoutProps.dataFormat, customColorDim);
-
-console.log('kids', myJSON.children);
-// console.log('jsonobj', senseD3.createJSONObj(layout, numOfDims));
 
     //create unique id
     var id = "sb_" + layout.qInfo.qId;
