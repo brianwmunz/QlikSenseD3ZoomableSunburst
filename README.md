@@ -8,7 +8,7 @@ The labels were added with the help of this tutorial by Martin Walter:
 
 Please view the QVF app for the best understanding of this extension.  There is a Story in the Storytelling section that goes through implementation.
 
-This extension was edited recently to use the new pageData function from senseUtils which will make it support data sets larger than 10,000 cells.
+This extension uses the pageData function from senseUtils which will make it support data sets larger than 10,000 cells.
 
 *********************************
 Installation & Use
@@ -22,3 +22,13 @@ It's fairly simple. With Tree data structures, the nodes should have a value ass
 If the data is structured properly, the visualization should come up right away.
 
 ![alt tag](https://raw.githubusercontent.com/brianwmunz/QlikSenseD3ZoomableSunburst/master/screenshots/sunburst.gif)
+
+
+*********************************
+Properties
+*********************************
+There are a couple of new properties in the latest version of the Sunburst.
+
+The first change is that the chart can now handle multiple data types.  The sunburst still handles data that is in a nested parent-child hierarchy, however, now the extension can handle data that has all parents in one field and all children in the other (i.e. child fields are not in both child and parent).  To expand on this, for data that is in the hierarchical relationship Northeast-PA-Philadelphia, these three values would be in three distinct fields.
+
+The second change has to do with coloring.  This extension now includes conditional coloring!  To implement this, expand your measure properties and click the dropdown "Color Format."  Select "By Expression (Hex Values)" then enter your expression below.  Expressions should use conditional statements that evaluate to Hex strings (e.g. '#393b79' including the single quotes).  Failing to include the single quotes or the hash symbol, will cause your expression to error.  Also of note, because your extension contains multiple dimensions, aggregation must be used to evaluate each field (i.e. sum, avg, min, only, etc.).
